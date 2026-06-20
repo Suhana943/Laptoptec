@@ -6,9 +6,6 @@
     <title>Laptoptec | Buy & Sell Used Laptops</title>
     <link rel="canonical" href="http://www.laptoptec.online/" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">   
-    
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
 
     <style>
         /* Global Reset */
@@ -24,6 +21,7 @@
             color: #0f172a;
             line-height: 1.4;
             padding-bottom: 60px;
+            overflow-x: hidden;
         }
 
         /* Header Layout */
@@ -43,90 +41,55 @@
         .brand-logo { font-size: 1.4rem; font-weight: 700; color: #0f172a; text-decoration: none; }
         .brand-logo span.tec-highlight { color: #0284c7; font-weight: 800; }
 
-        /* Action Buttons for Buyer/Seller */
-        .action-tabs {
-            display: flex;
-            gap: 10px;
-            padding: 16px;
-            max-width: 500px;
-            margin: 0 auto;
-        }
+        /* Navigation Scroll Bars */
+        .filter-scroll-wrapper { padding: 10px 16px; display: flex; gap: 8px; overflow-x: auto; white-space: nowrap; scrollbar-width: none; background: white; border-bottom: 1px solid #e2e8f0; }
+        .filter-scroll-wrapper::-webkit-scrollbar { display: none; }
+        .pill-btn { background-color: #ffffff; color: #475569; border: 1px solid #cbd5e1; padding: 6px 14px; font-size: 0.85rem; font-weight: 500; border-radius: 6px; text-decoration: none; }
+        .pill-btn.active { border-color: #0f172a; color: #0f172a; background-color: #f8fafc; }
 
-        .tab-btn {
-            flex: 1;
-            padding: 12px;
-            text-align: center;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 0.95rem;
-            cursor: pointer;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
+        /* Action Buttons */
+        .action-tabs { display: flex; gap: 10px; padding: 16px; max-width: 500px; margin: 0 auto; }
+        .tab-btn { flex: 1; padding: 12px; text-align: center; border-radius: 8px; text-decoration: none; font-weight: bold; font-size: 0.95rem; cursor: pointer; border: none; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .btn-sell-trigger { background-color: #ef4444; color: white; }
         .btn-buy-trigger { background-color: #16a34a; color: white; }
 
         /* Seller Form Style */
-        .form-container {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-            max-width: 500px;
-            margin: 10px auto;
-            display: none;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
-
+        .form-container { background: white; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; max-width: 500px; margin: 10px auto; display: none; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
         .form-container h2 { font-size: 1.2rem; margin-bottom: 15px; color: #0f172a; display: flex; align-items: center; gap: 8px;}
         .form-group { margin-bottom: 12px; }
         .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; color: #475569; }
-        .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; font-size: 0.95rem; }
-        .form-group input:focus, .form-group textarea:focus { border-color: #0284c7; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; font-size: 0.95rem; }
         .submit-btn { background: #0284c7; color: white; width: 100%; padding: 12px; font-weight: bold; border-radius: 6px; border: none; cursor: pointer; font-size: 1rem; }
 
-        /* Buyer Marketplace Cards */
-        .grid-container {
-            padding: 12px 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        .section-title {
-            max-width: 500px;
-            margin: 15px auto 5px auto;
-            padding: 0 16px;
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: #1e293b;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .laptop-item-card {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-
+        /* Marketplace Cards */
+        .grid-container { padding: 12px 16px; display: flex; flex-direction: column; gap: 14px; max-width: 500px; margin: 0 auto; }
+        .section-title { max-width: 500px; margin: 15px auto 5px auto; padding: 0 16px; font-size: 1.2rem; font-weight: 700; color: #1e293b; display: flex; align-items: center; gap: 6px; }
+        
+        .laptop-item-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
         .card-main-body { display: flex; padding: 14px; gap: 12px; }
-        .details-holder { width: 100%; display: flex; flex-direction: column; gap: 4px; }
+        
+        /* 📸 Image Holder Style */
+        .img-holder { width: 35%; display: flex; align-items: center; justify-content: center; background: #f1f5f9; border-radius: 8px; overflow: hidden; height: 100px; }
+        .img-holder img { width: 100%; height: 100%; object-fit: cover; }
+        .img-holder i { font-size: 2.5rem; color: #94a3b8; }
+        
+        .details-holder { width: 65%; display: flex; flex-direction: column; gap: 2px; }
         .item-name { font-size: 1.05rem; font-weight: 600; color: #0f172a; }
-        .item-specs { font-size: 0.85rem; color: #64748b; background: #f1f5f9; padding: 6px 10px; border-radius: 6px; margin: 4px 0; }
-        .price-current { font-size: 1.3rem; font-weight: 700; color: #16a34a; margin-top: 2px; }
+        .item-specs { font-size: 0.8rem; color: #64748b; margin: 2px 0; }
+        .price-current { font-size: 1.25rem; font-weight: 700; color: #16a34a; }
+        
+        /* 💬 Review Section Inside Card */
+        .review-box { border-top: 1px dashed #cbd5e1; padding: 10px 14px; background: #fafafa; font-size: 0.85rem; }
+        .review-title { font-weight: bold; margin-bottom: 6px; color: #475569; display: flex; justify-content: space-between; }
+        .single-review { background: white; border: 1px solid #e2e8f0; padding: 6px 10px; border-radius: 6px; margin-bottom: 5px; }
+        .review-stars { color: #fbbf24; font-size: 0.75rem; margin-bottom: 2px; }
+        
+        /* Add Review Form Inside Card */
+        .add-review-form { display: flex; gap: 5px; margin-top: 8px; }
+        .add-review-form input { flex: 1; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.8rem; outline: none; }
+        .add-review-form select { padding: 6px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.8rem; outline: none; background: white;}
+        .add-review-form button { background: #0f172a; color: white; border: none; padding: 6px 10px; border-radius: 4px; font-size: 0.8rem; cursor: pointer; }
+
         .contact-seller-btn { background: #25d366; color: white; text-align: center; padding: 12px; text-decoration: none; font-weight: 600; font-size: 0.95rem; border-top: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .badge-used { background: #eab308; color: white; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; width: fit-content; font-weight: bold; margin-bottom: 2px; }
     </style>
@@ -139,6 +102,14 @@
         <div>Laptop<span class="tec-highlight">Tec</span> Marketplace</div>
     </div>
 </header>
+
+<div class="filter-scroll-wrapper">
+    <a href="index.html" class="pill-btn">Latest Laptops</a> 
+    <a href="2hand.html" class="pill-btn active">Second Hand laptops Deals</a>
+    <a href="Laptoprevies.html" class="pill-btn">Top laptops reviews</a>
+    <a href="hp-laptops.html" class="pill-btn">HP Laptops</a>
+    <a href="under-30k.html" class="pill-btn">Laptops under ₹30,000</a>
+</div>
 
 <div class="action-tabs">
     <button class="tab-btn btn-sell-trigger" onclick="toggleSellForm()">
@@ -154,11 +125,15 @@
     <form id="laptopSellForm">
         <div class="form-group">
             <label>Laptop Name & Model</label>
-            <input type="text" id="lapName" placeholder="e.g., Dell Inspiron 15 3000" required>
+            <input type="text" id="lapName" placeholder="e.g., Dell Inspiron 15" required>
         </div>
         <div class="form-group">
-            <label>Specifications (RAM, Storage, Processor)</label>
-            <textarea id="lapSpecs" placeholder="e.g., 8GB RAM, 256GB SSD, Core i3 11th Gen" rows="2" required></textarea>
+            <label>Specifications</label>
+            <textarea id="lapSpecs" placeholder="e.g., 8GB RAM, 256GB SSD" rows="2" required></textarea>
+        </div>
+        <div class="form-group">
+            <label>Laptop Image URL (Optional)</label>
+            <input type="url" id="lapImage" placeholder="e.g., https://example.com/laptop.jpg">
         </div>
         <div class="form-group">
             <label>Your Expected Price (₹)</label>
@@ -177,8 +152,7 @@
 </div>
 
 <div class="grid-container" id="userLaptopsContainer">
-    <p style="text-align: center; color: #64748b; padding: 20px;">Loading available laptops...</p>
-</div>
+    </div>
 
 <script>
 function toggleSellForm() {
@@ -186,87 +160,132 @@ function toggleSellForm() {
     formBox.style.display = formBox.style.display === 'block' ? 'none' : 'block';
 }
 
-// ==========================================
-// 🔥 FIREBASE SETTINGS (यहाँ अपनी कीज़ डालें)
-// ==========================================
-const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
-};
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
-// 3. Seller: Form Data को Database में भेजना
+// Form Submit
 document.getElementById('laptopSellForm').addEventListener('submit', function(e) {
     e.preventDefault();
 
+    const id = Date.now(); // Unique ID for each item to manage reviews
     const name = document.getElementById('lapName').value;
     const specs = document.getElementById('lapSpecs').value;
+    const image = document.getElementById('lapImage').value;
     const price = document.getElementById('lapPrice').value;
     const contact = document.getElementById('lapContact').value;
 
-    db.collection("user_laptops").add({
+    const newLaptop = {
+        id: id,
         title: name,
         specifications: specs,
+        image: image || "",
         price: price,
         phone: contact,
-        timestamp: firebase.firestore.FieldValue.serverTimestamp()
-    })
-    .then(() => {
-        alert("आपका लैपटॉप सफलतापूर्वक लिस्ट हो गया है!");
-        document.getElementById('laptopSellForm').reset();
-        toggleSellForm();
-        loadUserLaptops(); 
-    })
-    .catch((error) => {
-        console.error("Error adding document: ", error);
-        alert("कुछ दिक्कत आई, कृपया दोबारा प्रयास करें।");
-    });
+        reviews: [] // Reviews store structure
+    };
+
+    let currentLaptops = JSON.parse(localStorage.getItem('local_laptops')) || [];
+    currentLaptops.unshift(newLaptop);
+    localStorage.setItem('local_laptops', JSON.stringify(currentLaptops));
+
+    alert("आपका लैपटॉप सफलतापूर्वक लिस्ट हो गया है!");
+    document.getElementById('laptopSellForm').reset();
+    toggleSellForm();
+    loadLocalLaptops();
 });
 
-// 4. Buyer: Database से डेटा लेकर कार्ड्स दिखाना
-function loadUserLaptops() {
+// Load Cards
+function loadLocalLaptops() {
     const container = document.getElementById('userLaptopsContainer');
-    
-    db.collection("user_laptops").orderBy("timestamp", "desc").get().then((querySnapshot) => {
-        container.innerHTML = ""; 
+    let currentLaptops = JSON.parse(localStorage.getItem('local_laptops')) || [];
+
+    container.innerHTML = ""; 
+
+    if (currentLaptops.length === 0) {
+        container.innerHTML = "<p style='text-align:center; color:#64748b; padding:20px;'>अभी कोई लैपटॉप बिक्री के लिए उपलब्ध नहीं है।</p>";
+        return;
+    }
+
+    currentLaptops.forEach((lap) => {
+        // Image Check Logic
+        const imageTag = lap.image ? `<img src="${lap.image}" alt="Laptop">` : `<i class="fa-solid fa-laptop"></i>`;
         
-        if(querySnapshot.empty) {
-            container.innerHTML = "<p style='text-align:center; color:#64748b; padding:20px;'>अभी कोई लैपटॉप बिक्री के लिए उपलब्ध नहीं है।</p>";
-            return;
+        // Review Loops Builder
+        let reviewsHtml = "";
+        if(lap.reviews && lap.reviews.length > 0){
+            lap.reviews.forEach(rev => {
+                let stars = "★".repeat(rev.rating) + "☆".repeat(5 - rev.rating);
+                reviewsHtml += `
+                    <div class="single-review">
+                        <div class="review-stars">${stars}</div>
+                        <div>${rev.text}</div>
+                    </div>
+                `;
+            });
+        } else {
+            reviewsHtml = "<p style='color:#94a3b8; font-size:0.8rem;'>No reviews yet.</p>";
         }
 
-        querySnapshot.forEach((doc) => {
-            const lap = doc.data();
-            
-            container.innerHTML += `
-                <div class="laptop-item-card">
-                    <div class="card-main-body">
-                        <div class="details-holder">
-                            <span class="badge-used">SECOND HAND</span>
-                            <div class="item-name">${lap.title}</div>
-                            <div class="item-specs">${lap.specifications}</div>
-                            <div class="price-current">₹${Number(lap.price).toLocaleString('en-IN')}</div>
-                        </div>
+        container.innerHTML += `
+            <div class="laptop-item-card">
+                <div class="card-main-body">
+                    <div class="img-holder">${imageTag}</div>
+                    <div class="details-holder">
+                        <span class="badge-used">SECOND HAND</span>
+                        <div class="item-name">${lap.title}</div>
+                        <div class="item-specs">${lap.specifications}</div>
+                        <div class="price-current">₹${Number(lap.price).toLocaleString('en-IN')}</div>
                     </div>
-                    <a href="https://wa.me/91${lap.phone}?text=Hi, I am interested in buying your laptop: ${encodeURIComponent(lap.title)} listed on LaptopTec." target="_blank" class="contact-seller-btn">
-                        <i class="fa-brands fa-whatsapp"></i> Contact Seller via WhatsApp
-                    </a>
                 </div>
-            `;
-        });
-    }).catch(err => {
-        console.error("Error getting documents: ", err);
-        container.innerHTML = "<p style='color:red; text-align:center;'>डेटा लोड करने में दिक्कत आ रही है।</p>";
+                
+                <div class="review-box">
+                    <div class="review-title"><span>💬 Reviews</span></div>
+                    <div id="reviews-list-${lap.id}">${reviewsHtml}</div>
+                    
+                    <div class="add-review-form">
+                        <select id="rate-${lap.id}">
+                            <option value="5">5 ★</option>
+                            <option value="4">4 ★</option>
+                            <option value="3">3 ★</option>
+                            <option value="2">2 ★</option>
+                            <option value="1">1 ★</option>
+                        </select>
+                        <input type="text" id="msg-${lap.id}" placeholder="Write a review..." required>
+                        <button onclick="submitReview(${lap.id})">Post</button>
+                    </div>
+                </div>
+
+                <a href="https://wa.me/91${lap.phone}?text=Hi, I am interested in buying your laptop: ${encodeURIComponent(lap.title)} listed on LaptopTec." target="_blank" class="contact-seller-btn">
+                    <i class="fa-brands fa-whatsapp"></i> Contact Seller via WhatsApp
+                </a>
+            </div>
+        `;
     });
 }
 
-document.addEventListener("DOMContentLoaded", loadUserLaptops);
+// Submit Review Handler
+function submitReview(lapId) {
+    const textInput = document.getElementById(`msg-${lapId}`);
+    const ratingInput = document.getElementById(`rate-${lapId}`);
+    
+    if(!textInput.value.trim()) return alert("कृपया रिव्यू टेक्स्ट लिखें।");
+
+    let currentLaptops = JSON.parse(localStorage.getItem('local_laptops')) || [];
+    
+    // Find item and inject review Object
+    currentLaptops = currentLaptops.map(lap => {
+        if(lap.id === lapId) {
+            if(!lap.reviews) lap.reviews = [];
+            lap.reviews.push({
+                rating: parseInt(ratingInput.value),
+                text: textInput.value
+            });
+        }
+        return lap;
+    });
+
+    localStorage.setItem('local_laptops', JSON.stringify(currentLaptops));
+    loadLocalLaptops(); // Reload views UI
+}
+
+document.addEventListener("DOMContentLoaded", loadLocalLaptops);
 </script>
 
 </body>
