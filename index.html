@@ -418,7 +418,6 @@
 <section class="search-container">
     <div class="search-box-wrapper">
         <i class="fa-solid fa-magnifying-glass"></i>
-        <!-- ✅ सुधार: यहाँ id="shopSearchInput" जोड़ दिया है -->
         <input type="text" id="shopSearchInput" placeholder="Enter city name for local shops (e.g., Mumbai, Delhi)...">
     </div>
 </section>
@@ -437,7 +436,6 @@
     <a href="dell-laptops.html" class="pill-btn">Dell Laptops</a>
 </div>
 
-<!-- ✅ सुधार: काउंटर बॉक्स को अलग कर के बंद कर दिया है -->
 <div class="product-counter">
     1003 Laptops
 </div>
@@ -445,7 +443,7 @@
 <!-- 📍 लोकल शॉप्स दिखाने का कंटेनर -->
 <div id="localShopsContainer" style="padding: 12px 16px; display: none; max-width: 500px; margin: 0 auto;">
     <h3 style="font-size: 1.15rem; font-weight: 700; color: #0284c7; margin-bottom: 10px;">
-        <i class="fa-solid fa-location-dot"></i> Near Shops by OpenStreetMap
+        <i class="fa-solid fa-location-dot"></i> Near Shops by Google Maps
     </h3>
     <div id="shopsList" style="display: flex; flex-direction: column; gap: 10px;"></div>
     <hr style="border: 0; border-top: 1px solid #cbd5e1; margin-top: 15px;">
@@ -563,8 +561,7 @@ function findLaptopShopsFree(userLocation) {
                 return;
             }
 
-           
-            // ✅ नया अपडेटेड कोड: गूगल मैप्स लिंक के साथ दुकानें दिखाएं
+            // ✅ गूगल मैप्स बटन के साथ दुकानें जनरेट हो रही हैं
             elements.slice(0, 5).forEach(shop => {
                 const shopName = shop.tags.name || "Computer & Laptop Shop";
                 const shopStreet = shop.tags["addr:street"] || shop.tags["addr:suburb"] || "Local Area";
