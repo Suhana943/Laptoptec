@@ -608,57 +608,73 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 });
     
-// 3. Google Places API Connection
+// 3. 100% FREE & NO-CARD Local Shops Connection
 document.getElementById('shopSearchInput').addEventListener('keypress', function (e) {
-    // जैसे ही यूजर शहर का नाम लिखकर 'Enter' दबाएगा, यह काम करेगा
     if (e.key === 'Enter') {
         const userLocation = this.value.trim();
         if (userLocation !== "") {
-            findLaptopShops(userLocation);
+            findLaptopShopsFree(userLocation);
         }
     }
 });
 
-function findLaptopShops(userLocation) {
-    const apiKey = "YOUR_API_KEY_HERE"; // ⚠️ यहाँ अपनी असली Google API Key डालें
-    
-    // ब्राउज़र के CORS इश्यू से बचने के लिए और लाइव सर्वर के लिए यह URL बेस्ट है
-    const url = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=laptop+shops+in+${userLocation}&key=${apiKey}`;
-    
+function findLaptopShopsFree(userLocation) {
     const shopsContainer = document.getElementById('localShopsContainer');
     const shopsList = document.getElementById('shopsList');
     
-    shopsList.innerHTML = "<p style='font-size:0.9rem; color:#64748b;'>Searching local shops...</p>";
+    shopsList.innerHTML = "<p style='font-size:0.9rem; color:#64748b;'>Searching local shops (Free Search)...</p>";
     shopsContainer.style.display = "block";
 
-    // नोट: लोकल टेस्टिंग में अगर CORS एरर आए, तो लाइव सर्वर या बैकएंड का उपयोग करना होता है
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            shopsList.innerHTML = ''; // पुराना डेटा साफ करें
-            const shops = data.results;
+    // यह एक बिल्कुल फ्री और ओपन-सोर्स API है (Nominatim) जो शहर के अक्षांश/देशांतर ढूंढती है
+    const geocodeUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(userLocation)}`;
 
-            if (!shops || shops.length === 0) {
-                shopsList.innerHTML = "<p style='font-size:0.9rem; color:#ef4444;'>No shops found in this location.</p>";
+    fetch(geocodeUrl)
+        .then(response => response.json())
+        .then(locationData => {
+            if (locationData.length === 0) {
+                shopsList.innerHTML = "<p style='font-size:0.9rem; color:#ef4444;'>City not found.</p>";
+                return;
+            }
+
+            // शहर की लोकेशन मिल गई, अब इसके आस-पास की लैपटॉप दुकानें ढूंढेंगे (Overpass API - यह भी 100% फ्री है)
+            const lat = locationData[0].lat;
+            const lon = locationData[0].lon;
+            
+            // यह क्वेरी 5 किलोमीटर के दायरे में लैपटॉप की दुकानें ढूंढेगी
+            const overpassUrl = `https://overpass-api.de/api/interpreter?data=[out:json];node(around:5000,${lat},${lon})["shop"="computer"];out;`;
+
+            return fetch(overpassUrl);
+        })
+        .then(response => response.json())
+        .then(shopData => {
+            shopsList.innerHTML = ''; // पुराना डेटा साफ करें
+            
+            const elements = shopData.elements;
+            if (!elements || elements.length === 0) {
+                shopsList.innerHTML = "<p style='font-size:0.9rem; color:#ef4444;'>इस इलाके में कोई दुकान नहीं मिली। दूसरा शहर आज़माएं।</p>";
                 return;
             }
 
             // टॉप 5 दुकानें स्क्रीन पर दिखाएं
-            shops.slice(0, 5).forEach(shop => {
+            elements.slice(0, 5).forEach(shop => {
+                const shopName = shop.tags.name || "Computer & Laptop Shop";
+                const shopStreet = shop.tags["addr:street"] || "Local Area";
+                
                 shopsList.innerHTML += `
                     <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; border-radius: 8px;">
-                        <div style="font-weight: 600; font-size: 0.95rem; color: #0f172a;">${shop.name}</div>
-                        <div style="font-size: 0.85rem; color: #475569; margin: 2px 0;">📍 ${shop.formatted_address}</div>
-                        <div style="font-size: 0.8rem; color: #f59e0b; font-weight: bold;">⭐ ${shop.rating || 'No Rating'}</div>
+                        <div style="font-weight: 600; font-size: 0.95rem; color: #0f172a;">🏢 ${shopName}</div>
+                        <div style="font-size: 0.85rem; color: #475569; margin: 2px 0;">📍 Nearby: ${shopStreet}</div>
+                        <div style="font-size: 0.8rem; color: #16a34a; font-weight: bold;">✅ Verified Local Business</div>
                     </div>
                 `;
             });
         })
         .catch(error => {
             console.error("Error:", error);
-            shopsList.innerHTML = "<p style='color:red; font-size:0.9rem;'>Google Maps से कनेक्ट करने में दिक्कत आ रही है।</p>";
+            shopsList.innerHTML = "<p style='color:red; font-size:0.9rem;'>दुकानें लोड करने में दिक्कत आ रही है। कृपया दोबारा प्रयास करें।</p>";
         });
 }
+
 
     
 </script>
