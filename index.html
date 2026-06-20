@@ -525,7 +525,16 @@
 </div>
 
 <div class="product-counter">
-    1003 Laptops
+
+    
+<div id="localShopsContainer" style="padding: 12px 16px; display: none; max-width: 500px; margin: 0 auto;">
+    <h3 style="font-size: 1.15rem; font-weight: 700; color: #0284c7; margin-bottom: 10px;">
+        <i class="fa-solid fa-location-dot"></i> Near Shops by Google Maps
+    </h3>
+    <div id="shopsList" style="display: flex; flex-direction: column; gap: 10px;"></div>
+    <hr style="border: 0; border-top: 1px solid #cbd5e1; margin-top: 15px;">
+</div>
+
 </div>
 
 <div class="grid-container" id="laptopContainer">
@@ -599,6 +608,57 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 });
     
+// 3. Google Places API Connection
+document.getElementById('shopSearchInput').addEventListener('keypress', function (e) {
+    // जैसे ही यूजर शहर का नाम लिखकर 'Enter' दबाएगा, यह काम करेगा
+    if (e.key === 'Enter') {
+        const userLocation = this.value.trim();
+        if (userLocation !== "") {
+            findLaptopShops(userLocation);
+        }
+    }
+});
+
+function findLaptopShops(userLocation) {
+    const apiKey = "YOUR_API_KEY_HERE"; // ⚠️ यहाँ अपनी असली Google API Key डालें
+    
+    // ब्राउज़र के CORS इश्यू से बचने के लिए और लाइव सर्वर के लिए यह URL बेस्ट है
+    const url = `https://maps.googleapis.com/maps/api/place/textsearch/json?query=laptop+shops+in+${userLocation}&key=${apiKey}`;
+    
+    const shopsContainer = document.getElementById('localShopsContainer');
+    const shopsList = document.getElementById('shopsList');
+    
+    shopsList.innerHTML = "<p style='font-size:0.9rem; color:#64748b;'>Searching local shops...</p>";
+    shopsContainer.style.display = "block";
+
+    // नोट: लोकल टेस्टिंग में अगर CORS एरर आए, तो लाइव सर्वर या बैकएंड का उपयोग करना होता है
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            shopsList.innerHTML = ''; // पुराना डेटा साफ करें
+            const shops = data.results;
+
+            if (!shops || shops.length === 0) {
+                shopsList.innerHTML = "<p style='font-size:0.9rem; color:#ef4444;'>No shops found in this location.</p>";
+                return;
+            }
+
+            // टॉप 5 दुकानें स्क्रीन पर दिखाएं
+            shops.slice(0, 5).forEach(shop => {
+                shopsList.innerHTML += `
+                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; border-radius: 8px;">
+                        <div style="font-weight: 600; font-size: 0.95rem; color: #0f172a;">${shop.name}</div>
+                        <div style="font-size: 0.85rem; color: #475569; margin: 2px 0;">📍 ${shop.formatted_address}</div>
+                        <div style="font-size: 0.8rem; color: #f59e0b; font-weight: bold;">⭐ ${shop.rating || 'No Rating'}</div>
+                    </div>
+                `;
+            });
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            shopsList.innerHTML = "<p style='color:red; font-size:0.9rem;'>Google Maps से कनेक्ट करने में दिक्कत आ रही है।</p>";
+        });
+}
 
     
 </script>
