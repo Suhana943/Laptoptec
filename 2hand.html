@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="hi">
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laptoptec | Buy & Sell Used Laptops</title>
+    <link rel="canonical" href="http://www.laptoptec.online/" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">   
+    
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+    <style>
+        /* Global Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #0f172a;
+            line-height: 1.4;
+            padding-bottom: 60px;
+        }
+
+        /* Header Layout */
+        .main-header {
+            background-color: #ffffff;
+            color: #000000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 14px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .brand-logo { font-size: 1.4rem; font-weight: 700; color: #0f172a; text-decoration: none; }
+        .brand-logo span.tec-highlight { color: #0284c7; font-weight: 800; }
+
+        /* Action Buttons for Buyer/Seller */
+        .action-tabs {
+            display: flex;
+            gap: 10px;
+            padding: 16px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.95rem;
+            cursor: pointer;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-sell-trigger { background-color: #ef4444; color: white; }
+        .btn-buy-trigger { background-color: #16a34a; color: white; }
+
+        /* Seller Form Style */
+        .form-container {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            max-width: 500px;
+            margin: 10px auto;
+            display: none;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-container h2 { font-size: 1.2rem; margin-bottom: 15px; color: #0f172a; display: flex; align-items: center; gap: 8px;}
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; color: #475569; }
+        .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; font-size: 0.95rem; }
+        .form-group input:focus, .form-group textarea:focus { border-color: #0284c7; }
+        .submit-btn { background: #0284c7; color: white; width: 100%; padding: 12px; font-weight: bold; border-radius: 6px; border: none; cursor: pointer; font-size: 1rem; }
+
+        /* Buyer Marketplace Cards */
+        .grid-container {
+            padding: 12px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            max-width: 500px;
+            margin: 15px auto 5px auto;
+            padding: 0 16px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .laptop-item-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .card-main-body { display: flex; padding: 14px; gap: 12px; }
+        .details-holder { width: 100%; display: flex; flex-direction: column; gap: 4px; }
+        .item-name { font-size: 1.05rem; font-weight: 600; color: #0f172a; }
+        .item-specs { font-size: 0.85rem; color: #64748b; background: #f1f5f9; padding: 6px 10px; border-radius: 6px; margin: 4px 0; }
+        .price-current { font-size: 1.3rem; font-weight: 700; color: #16a34a; margin-top: 2px; }
+        .contact-seller-btn { background: #25d366; color: white; text-align: center; padding: 12px; text-decoration: none; font-weight: 600; font-size: 0.95rem; border-top: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .badge-used { background: #eab308; color: white; font-size: 0.7rem; padding: 2px 6px; border-radius: 4px; width: fit-content; font-weight: bold; margin-bottom: 2px; }
+    </style>
+</head>
+
+<body>
+
+<header class="main-header">
+    <div class="brand-logo">
+        <div>Laptop<span class="tec-highlight">Tec</span> Marketplace</div>
+    </div>
+</header>
+
+<div class="action-tabs">
+    <button class="tab-btn btn-sell-trigger" onclick="toggleSellForm()">
+        <i class="fa-solid fa-plus"></i> Sell Laptop (बेचें)
+    </button>
+    <a href="#usedLaptopsSection" class="tab-btn btn-buy-trigger">
+        <i class="fa-solid fa-basket-shopping"></i> Buy Laptop (खरीदें)
+    </a>
+</div>
+
+<div class="form-container" id="sellFormBox">
+    <h2><i class="fa-solid fa-pen-to-square" style="color: #0284c7;"></i> Enter Laptop Details</h2>
+    <form id="laptopSellForm">
+        <div class="form-group">
+            <label>Laptop Name & Model</label>
+            <input type="text" id="lapName" placeholder="e.g., Dell Inspiron 15 3000" required>
+        </div>
+        <div class="form-group">
+            <label>Specifications (RAM, Storage, Processor)</label>
+            <textarea id="lapSpecs" placeholder="e.g., 8GB RAM, 256GB SSD, Core i3 11th Gen" rows="2" required></textarea>
+        </div>
+        <div class="form-group">
+            <label>Your Expected Price (₹)</label>
+            <input type="number" id="lapPrice" placeholder="e.g., 15000" required>
+        </div>
+        <div class="form-group">
+            <label>Your WhatsApp Number</label>
+            <input type="tel" id="lapContact" placeholder="e.g., 9876543210" required>
+        </div>
+        <button type="submit" class="submit-btn">Submit & List Laptop</button>
+    </form>
+</div>
+
+<div class="section-title" id="usedLaptopsSection">
+    <i class="fa-solid fa-bolt" style="color: #eab308;"></i> Available Used Laptops
+</div>
+
+<div class="grid-container" id="userLaptopsContainer">
+    <p style="text-align: center; color: #64748b; padding: 20px;">Loading available laptops...</p>
+</div>
+
+<script>
+function toggleSellForm() {
+    const formBox = document.getElementById('sellFormBox');
+    formBox.style.display = formBox.style.display === 'block' ? 'none' : 'block';
+}
+
+// ==========================================
+// 🔥 FIREBASE SETTINGS (यहाँ अपनी कीज़ डालें)
+// ==========================================
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// 3. Seller: Form Data को Database में भेजना
+document.getElementById('laptopSellForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const name = document.getElementById('lapName').value;
+    const specs = document.getElementById('lapSpecs').value;
+    const price = document.getElementById('lapPrice').value;
+    const contact = document.getElementById('lapContact').value;
+
+    db.collection("user_laptops").add({
+        title: name,
+        specifications: specs,
+        price: price,
+        phone: contact,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    })
+    .then(() => {
+        alert("आपका लैपटॉप सफलतापूर्वक लिस्ट हो गया है!");
+        document.getElementById('laptopSellForm').reset();
+        toggleSellForm();
+        loadUserLaptops(); 
+    })
+    .catch((error) => {
+        console.error("Error adding document: ", error);
+        alert("कुछ दिक्कत आई, कृपया दोबारा प्रयास करें।");
+    });
+});
+
+// 4. Buyer: Database से डेटा लेकर कार्ड्स दिखाना
+function loadUserLaptops() {
+    const container = document.getElementById('userLaptopsContainer');
+    
+    db.collection("user_laptops").orderBy("timestamp", "desc").get().then((querySnapshot) => {
+        container.innerHTML = ""; 
+        
+        if(querySnapshot.empty) {
+            container.innerHTML = "<p style='text-align:center; color:#64748b; padding:20px;'>अभी कोई लैपटॉप बिक्री के लिए उपलब्ध नहीं है।</p>";
+            return;
+        }
+
+        querySnapshot.forEach((doc) => {
+            const lap = doc.data();
+            
+            container.innerHTML += `
+                <div class="laptop-item-card">
+                    <div class="card-main-body">
+                        <div class="details-holder">
+                            <span class="badge-used">SECOND HAND</span>
+                            <div class="item-name">${lap.title}</div>
+                            <div class="item-specs">${lap.specifications}</div>
+                            <div class="price-current">₹${Number(lap.price).toLocaleString('en-IN')}</div>
+                        </div>
+                    </div>
+                    <a href="https://wa.me/91${lap.phone}?text=Hi, I am interested in buying your laptop: ${encodeURIComponent(lap.title)} listed on LaptopTec." target="_blank" class="contact-seller-btn">
+                        <i class="fa-brands fa-whatsapp"></i> Contact Seller via WhatsApp
+                    </a>
+                </div>
+            `;
+        });
+    }).catch(err => {
+        console.error("Error getting documents: ", err);
+        container.innerHTML = "<p style='color:red; text-align:center;'>डेटा लोड करने में दिक्कत आ रही है।</p>";
+    });
+}
+
+document.addEventListener("DOMContentLoaded", loadUserLaptops);
+</script>
+
+</body>
+</html>
