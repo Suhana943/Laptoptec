@@ -563,16 +563,25 @@ function findLaptopShopsFree(userLocation) {
                 return;
             }
 
-            // ✅ सुधार: जावास्क्रिप्ट कोड को पूरा बंद कर दिया गया है
+           
+            // ✅ नया अपडेटेड कोड: गूगल मैप्स लिंक के साथ दुकानें दिखाएं
             elements.slice(0, 5).forEach(shop => {
                 const shopName = shop.tags.name || "Computer & Laptop Shop";
                 const shopStreet = shop.tags["addr:street"] || shop.tags["addr:suburb"] || "Local Area";
                 
+                // 🗺️ गूगल मैप्स का डायनामिक सर्च लिंक
+                const googleMapsLink = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(shopName + ' ' + userLocation)}`;
+                
                 shopsList.innerHTML += `
-                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; border-radius: 8px; margin-bottom: 8px;">
-                        <div style="font-weight: 600; font-size: 0.95rem; color: #0f172a;">🏢 ${shopName}</div>
-                        <div style="font-size: 0.85rem; color: #475569; margin: 2px 0;">📍 Area: ${shopStreet}</div>
-                        <div style="font-size: 0.8rem; color: #16a34a; font-weight: bold;">✅ Verified Local Business</div>
+                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 14px; border-radius: 8px; margin-bottom: 8px; display: flex; flex-direction: column; gap: 8px;">
+                        <div>
+                            <div style="font-weight: 600; font-size: 0.95rem; color: #0f172a;">🏢 ${shopName}</div>
+                            <div style="font-size: 0.85rem; color: #475569; margin: 2px 0;">📍 Area: ${shopStreet}</div>
+                        </div>
+                        <!-- गूगल मैप का सुंदर बटन -->
+                        <a href="${googleMapsLink}" target="_blank" style="align-self: flex-start; background-color: #16a34a; color: white; text-decoration: none; font-size: 0.8rem; font-weight: 600; padding: 6px 12px; border-radius: 4px; display: flex; align-items: center; gap: 5px;">
+                            <i class="fa-solid fa-map-location-dot"></i> View on Google Maps
+                        </a>
                     </div>
                 `;
             });
