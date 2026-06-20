@@ -1,14 +1,12 @@
-
 <!DOCTYPE html>
 <html lang="hi">
 
-    <head>
+<head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Laptoptec | Best Deals on Gaming, Student & Professional Laptops</title>
     
-    <!-- Canonical Tag Yahan lagayein -->
+    <!-- Canonical Tag -->
     <link rel="canonical" href="http://www.laptoptec.online/" />
-    
     
     <meta name="description" content="Find the best deals in laptops at laptoptec.online. Buy high-quality gaming, student, and professional laptops under 10000, 20000, 30000, and 40000.">
     <meta name="keywords" content="best deals in laptop, laptoptec, laptop under 10000, laptop under 20000, laptop under 30000, gaming laptop, student laptop, professional laptop, cheap laptop deals">
@@ -71,7 +69,7 @@
         }
 
         .brand-logo span.tec-highlight {
-            color: #0284c7; /* प्रीमियम ब्लू शेड */
+            color: #0284c7; 
             font-weight: 800;
         }
 
@@ -198,35 +196,6 @@
             display: flex;
             align-items: center;
             gap: 12px;
-        }
-
-        .item-left-content span.icon-emoji {
-            font-size: 1.1rem;
-        }
-
-        .item-left-content span.bullet-blue {
-            color: #3b82f6;
-            font-size: 0.6rem;
-        }
-
-        .item-left-content span.bullet-orange {
-            color: #f59e0b;
-            font-size: 0.6rem;
-        }
-
-        .sidebar-item i.arrow-gray {
-            color: #cbd5e1;
-            font-size: 0.8rem;
-        }
-
-        .sidebar-item i.folder-yellow {
-            color: #fcd34d;
-            font-size: 0.95rem;
-        }
-
-        .sidebar-item.active-link {
-            color: #2563eb;
-            font-weight: 600;
         }
 
         /* 4. Intro Text Area */
@@ -372,21 +341,6 @@
             text-decoration: line-through;
         }
 
-        .compare-checkbox-row {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.8rem;
-            color: #64748b;
-            margin-top: 4px;
-        }
-
-        .brand-affiliate-logo {
-            margin-top: 6px;
-            height: 14px;
-            align-self: flex-start;
-        }
-
         .card-actions-row {
             display: flex;
             border-top: 1px solid #e2e8f0;
@@ -401,45 +355,9 @@
             font-weight: 600;
         }
 
-        .btn-learn {
-            background-color: #ffffff;
-            color: #0284c7;
-            border-right: 1px solid #e2e8f0;
-        }
-
         .btn-buy {
             background-color: #0284c7;
             color: #ffffff;
-        }
-
-        /* 8. Bottom Sticky Bar */
-        .bottom-sticky-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background-color: #ffffff;
-            display: flex;
-            border-top: 1px solid #cbd5e1;
-            z-index: 1500;
-        }
-
-        .sticky-tab {
-            flex: 1;
-            text-align: center;
-            padding: 12px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: #334155;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-
-        .sticky-tab:first-child {
-            border-right: 1px solid #cbd5e1;
         }
 
         footer {
@@ -479,24 +397,17 @@
     <div class="sidebar-links">
         <a href="index.html" class="sidebar-item">
             <div class="item-left-content">
-                <span class="icon-emoji"></span>
                 <span>Top Recommendations</span>
             </div>
-            
-        
-
-
+        </a>
         <a href="advice.html" class="sidebar-item">
             <div class="item-left-content">
-                <span class="icon-emoji"></span>
                 <span>Buying Advice</span>
             </div>
             <i class="fa-solid fa-chevron-right arrow-gray"></i>
         </a>
-
         <a href="about.html" class="sidebar-item">
             <div class="item-left-content">
-                <span class="icon-emoji"></span>
                 <span>About Us</span>
             </div>
             <i class="fa-solid fa-chevron-right arrow-gray"></i>
@@ -507,15 +418,17 @@
 <section class="search-container">
     <div class="search-box-wrapper">
         <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" placeholder="Search laptops here (e.g., HP, Acer, Asus)...">
+        <!-- ✅ सुधार: यहाँ id="shopSearchInput" जोड़ दिया है -->
+        <input type="text" id="shopSearchInput" placeholder="Enter city name for local shops (e.g., Mumbai, Delhi)...">
     </div>
 </section>
 
 <section class="content-intro">
     <h1>Laptops</h1>
-    <p>Discover Your Ideal Laptop with LaptopTec's Laptop Finder. Finding the right laptop can be a daunting task with so many models and features to choose from. Whether you're a</p>
+    <p>Discover Your Ideal Laptop with LaptopTec's Laptop Finder. Finding the right laptop can be a daunting task with so many models and features to choose from.</p>
     <span class="read-more-link">Read more</span>
 </section>
+
 <div class="filter-scroll-wrapper">
     <a href="index.html" class="pill-btn active">Latest Laptops</a>
     <a href="Laptoprevies.html" class="pill-btn">Top laptops reviews </a>
@@ -524,17 +437,18 @@
     <a href="dell-laptops.html" class="pill-btn">Dell Laptops</a>
 </div>
 
+<!-- ✅ सुधार: काउंटर बॉक्स को अलग कर के बंद कर दिया है -->
 <div class="product-counter">
+    1003 Laptops
+</div>
 
-    
+<!-- 📍 लोकल शॉप्स दिखाने का कंटेनर -->
 <div id="localShopsContainer" style="padding: 12px 16px; display: none; max-width: 500px; margin: 0 auto;">
     <h3 style="font-size: 1.15rem; font-weight: 700; color: #0284c7; margin-bottom: 10px;">
-        <i class="fa-solid fa-location-dot"></i> Near Shops by Google Maps
+        <i class="fa-solid fa-location-dot"></i> Near Shops by OpenStreetMap
     </h3>
     <div id="shopsList" style="display: flex; flex-direction: column; gap: 10px;"></div>
     <hr style="border: 0; border-top: 1px solid #cbd5e1; margin-top: 15px;">
-</div>
-
 </div>
 
 <div class="grid-container" id="laptopContainer">
@@ -552,8 +466,6 @@
 </footer>
 
 <script>
-    // 1. Sidebar toggle functionality
-    // 1. Sidebar toggle functionality
 function toggleSidebar() {
     const sidebar = document.getElementById('sidebarMenu');
     const overlay = document.getElementById('sidebarOverlay');
@@ -569,14 +481,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const container = document.getElementById('laptopContainer');
     if (!container) return; 
 
-    // Fetch JSON data
     fetch('laptops.json')
         .then(response => {
             if (!response.ok) throw new Error("File nahi mili (404)");
             return response.json();
         })
         .then(laptops => {
-            container.innerHTML = ''; // "Loading..." text ko hatayein
+            container.innerHTML = ''; 
 
             laptops.forEach((laptop) => {
                 container.innerHTML += `
@@ -603,7 +514,6 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .catch(err => {
             console.error("Error loading JSON:", err);
-            // Agar file load nahi hui, toh screen par error dikhayega
             container.innerHTML = `<p style="color:red; text-align:center;">Data load nahi ho raha: ${err.message}. File path check karein.</p>`;
         });
 });
@@ -625,29 +535,27 @@ function findLaptopShopsFree(userLocation) {
     shopsList.innerHTML = "<p style='font-size:0.9rem; color:#64748b;'>Searching local shops (Free Search)...</p>";
     shopsContainer.style.display = "block";
 
-    // यह एक बिल्कुल फ्री और ओपन-सोर्स API है (Nominatim) जो शहर के अक्षांश/देशांतर ढूंढती है
     const geocodeUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(userLocation)}`;
 
     fetch(geocodeUrl)
         .then(response => response.json())
         .then(locationData => {
-            if (locationData.length === 0) {
+            if (!locationData || locationData.length === 0) {
                 shopsList.innerHTML = "<p style='font-size:0.9rem; color:#ef4444;'>City not found.</p>";
                 return;
             }
 
-            // शहर की लोकेशन मिल गई, अब इसके आस-पास की लैपटॉप दुकानें ढूंढेंगे (Overpass API - यह भी 100% फ्री है)
             const lat = locationData[0].lat;
             const lon = locationData[0].lon;
             
-            // यह क्वेरी 5 किलोमीटर के दायरे में लैपटॉप की दुकानें ढूंढेगी
             const overpassUrl = `https://overpass-api.de/api/interpreter?data=[out:json];node(around:5000,${lat},${lon})["shop"="computer"];out;`;
 
             return fetch(overpassUrl);
         })
         .then(response => response.json())
         .then(shopData => {
-            shopsList.innerHTML = ''; // पुराना डेटा साफ करें
+            if(!shopData) return;
+            shopsList.innerHTML = ''; 
             
             const elements = shopData.elements;
             if (!elements || elements.length === 0) {
@@ -655,15 +563,15 @@ function findLaptopShopsFree(userLocation) {
                 return;
             }
 
-            // टॉप 5 दुकानें स्क्रीन पर दिखाएं
+            // ✅ सुधार: जावास्क्रिप्ट कोड को पूरा बंद कर दिया गया है
             elements.slice(0, 5).forEach(shop => {
                 const shopName = shop.tags.name || "Computer & Laptop Shop";
-                const shopStreet = shop.tags["addr:street"] || "Local Area";
+                const shopStreet = shop.tags["addr:street"] || shop.tags["addr:suburb"] || "Local Area";
                 
                 shopsList.innerHTML += `
-                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; border-radius: 8px;">
+                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 12px; border-radius: 8px; margin-bottom: 8px;">
                         <div style="font-weight: 600; font-size: 0.95rem; color: #0f172a;">🏢 ${shopName}</div>
-                        <div style="font-size: 0.85rem; color: #475569; margin: 2px 0;">📍 Nearby: ${shopStreet}</div>
+                        <div style="font-size: 0.85rem; color: #475569; margin: 2px 0;">📍 Area: ${shopStreet}</div>
                         <div style="font-size: 0.8rem; color: #16a34a; font-weight: bold;">✅ Verified Local Business</div>
                     </div>
                 `;
@@ -674,9 +582,6 @@ function findLaptopShopsFree(userLocation) {
             shopsList.innerHTML = "<p style='color:red; font-size:0.9rem;'>दुकानें लोड करने में दिक्कत आ रही है। कृपया दोबारा प्रयास करें।</p>";
         });
 }
-
-
-    
 </script>
     
 </body>
