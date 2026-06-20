@@ -1,0 +1,35 @@
+Name: Full Website Handler
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # हर रात 12 बजे अपने आप चलेगा
+  workflow_dispatch: # आप खुद भी बटन दबाकर जब चाहें अपडेट कर सकते हैं
+
+jobs:
+  run-handler:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Repo Load
+      uses: actions/checkout@v3
+
+    - name: Python Setup
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+
+    - name: Install Gemini
+      run: pip install google-generativeai
+
+    - name: Run Auto Handler
+      env:
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      run: python auto_worker.py
+
+    - name: Push Updates to Website
+      run: |
+        git config --global user.name 'LaptopTec-Bot'
+        git config --global user.email 'bot@laptoptec.online'
+        git add laptops.json
+        git commit -m "Website auto-handled by Gemini AI" || exit 0
+        git push
+Runeer add hai na
