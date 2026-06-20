@@ -461,6 +461,42 @@
     </div>
 </div>
 
+
+
+
+<div id="aiChatCircle" onclick="toggleAIChat()" style="position: fixed; bottom: 20px; right: 20px; width: 60px; height: 60px; background: #0284c7; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 10000; transition: transform 0.2s;">
+    <i class="fa-solid fa-comments"></i>
+</div>
+
+<div id="aiChatBox" style="position: fixed; bottom: 90px; right: 20px; width: 340px; height: 450px; background: white; border-radius: 12px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); display: none; flex-direction: column; overflow: hidden; z-index: 10000; border: 1px solid #e2e8f0;">
+    <div style="background: #0f172a; color: white; padding: 14px; display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="width: 10px; height: 10px; background: #25d366; border-radius: 50%;"></div>
+            <strong style="font-size: 0.95rem;">LaptopTec Google AI Helper</strong>
+        </div>
+        <i class="fa-solid fa-xmark" onclick="toggleAIChat()" style="cursor: pointer; font-size: 1.1rem;"></i>
+    </div>
+
+    <div id="aiChatMessages" style="flex: 1; padding: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; background: #f8fafc; font-size: 0.88rem;">
+        <div style="align-self: flex-start; background: #e2e8f0; padding: 8px 12px; border-radius: 8px; max-width: 80%; color: #0f172a;">
+            Hi! Main Google AI Assistant hoon. Mujhe batayein aapko kaun sa laptop chahiye? Main live Google se best laptop aur latest reviews dhoondh kar bataunga! 🚀
+        </div>
+    </div>
+
+    <div style="padding: 10px; display: flex; gap: 6px; border-top: 1px solid #e2e8f0; background: white;">
+        <input type="text" id="aiUserInput" placeholder="Ask about latest laptops, reviews..." style="flex: 1; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; outline: none; font-size: 0.9rem;" onkeypress="if(event.key === 'Enter') sendToGoogleAI()">
+        <button onclick="sendToGoogleAI()" style="background: #0284c7; color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: bold;">
+            <i class="fa-solid fa-paper-plane"></i>
+        </button>
+    </div>
+</div>
+
+
+
+
+
+
+
 <footer>
     <p>© 2026 LaptopTec. All rights reserved.</p>
 </footer>
@@ -589,6 +625,93 @@ function findLaptopShopsFree(userLocation) {
             console.error("Error:", error);
             shopsList.innerHTML = "<p style='color:red; font-size:0.9rem;'>दुकानें लोड करने में दिक्कत आ रही है। कृपया दोबारा प्रयास करें।</p>";
         });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// चैट विंडो को खोलने और बंद करने का लॉजिक
+function toggleAIChat() {
+    const chatBox = document.getElementById('aiChatBox');
+    chatBox.style.display = chatBox.style.display === 'flex' ? 'none' : 'flex';
+}
+
+// 🔑 गूगल जेमिनी की API KEY (यहाँ अपनी फ्री की डालें)
+const GOOGLE_GEMINI_API_KEY = "YOUR_FREE_GEMINI_API_KEY"; 
+
+async function sendToGoogleAI() {
+    const inputEl = document.getElementById('aiUserInput');
+    const msgContainer = document.getElementById('aiChatMessages');
+    const query = inputEl.value.trim();
+
+    if (!query) return;
+
+    // 1. यूजर का मैसेज स्क्रीन पर दिखाएं
+    msgContainer.innerHTML += `
+        <div style="align-self: flex-end; background: #0284c7; color: white; padding: 8px 12px; border-radius: 8px; max-width: 80%;">
+            ${query}
+        </div>
+    `;
+    inputEl.value = "";
+    msgContainer.scrollTop = msgContainer.scrollHeight;
+
+    // 2. "Thinking..." वाला बफरिंग मैसेज दिखाएं
+    const loadingId = "load-" + Date.now();
+    msgContainer.innerHTML += `
+        <div id="${loadingId}" style="align-self: flex-start; background: #e2e8f0; padding: 8px 12px; border-radius: 8px; max-width: 80%; color: #64748b;">
+            <i class="fa-solid fa-spinner fa-spin"></i> Google AI is searching latest reviews...
+        </div>
+    `;
+    msgContainer.scrollTop = msgContainer.scrollHeight;
+
+    try {
+        // 3. डायरेक्ट Google Gemini AI API को कॉल करना
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GOOGLE_GEMINI_API_KEY}`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{ 
+                        text: `You are LaptopTec's AI Assistant. Answer this query based on the latest internet trends, laptop reviews, and real-time specs. Keep it casual in Roman Hindi (Hinglish) with clear points. Query: ${query}` 
+                    }]
+                }]
+            })
+        });
+
+        const data = await response.json();
+        // लोडिंग हटाकर असली जवाब सेट करना
+        document.getElementById(loadingId).remove();
+        
+        let aiReply = data.candidates[0].content.parts[0].text;
+        
+        // पैराग्राफ्स और स्टार्स को सुंदर दिखाने के लिए सिंपल फॉर्मेटिंग
+        aiReply = aiReply.replace(/\n/g, "<br>").replace(/\*\*/g, "<b>").replace(/\*/g, "⭐");
+
+        msgContainer.innerHTML += `
+            <div style="align-self: flex-start; background: #e2e8f0; padding: 8px 12px; border-radius: 8px; max-width: 80%; color: #0f172a; line-height: 1.4;">
+                ${aiReply}
+            </div>
+        `;
+    } catch (error) {
+        console.error(error);
+        document.getElementById(loadingId).remove();
+        msgContainer.innerHTML += `
+            <div style="align-self: flex-start; background: #fee2e2; color: #ef4444; padding: 8px 12px; border-radius: 8px; max-width: 80%;">
+                Oops! Connection down. Please check if your API Key is updated.
+            </div>
+        `;
+    }
+    msgContainer.scrollTop = msgContainer.scrollHeight;
 }
 </script>
     
